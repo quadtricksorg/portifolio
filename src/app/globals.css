@@ -15,12 +15,7 @@
   --primary-glow: #ff893b;
   --lavender: #9ab9eb;
   --gold: #f6af00;
-  --ember: #b32616;
   --amber: #ffb547;
-  --flame: #ff893b;
-  --rust: #3a0d07;
-  --sand: #dfe7f6;
-  --cream: #eef2fb;
   --graphite: #13161d;
 
   /* Light theme (default values; dark overrides below) */
@@ -37,12 +32,12 @@
   --accent-hover: #c92816;
   --accent-fg: #ffffff;
   --accent-text: #c42612; /* red-orange used as text (AA) */
-  --cool-text: #425b96; /* lavender family used as text (AA) */
   --glow: rgba(252, 60, 41, 0.14);
   --glow-cool: rgba(66, 91, 150, 0.14);
   --ring: #df2f1c;
   --glass: rgba(255, 255, 255, 0.72);
   --glass-solid: rgba(255, 255, 255, 0.92);
+  --glass-tint: rgba(255, 255, 255, 0.8);
   --chrome-from: #0c0f16;
   --chrome-to: #425b96;
   --emblem-side-1: #c9d0de;
@@ -66,12 +61,12 @@
   --accent-hover: #fc3c29;
   --accent-fg: #ffffff;
   --accent-text: #ff6b55;
-  --cool-text: #9ab9eb;
   --glow: rgba(252, 60, 41, 0.28);
   --glow-cool: rgba(154, 185, 235, 0.16);
   --ring: #fc3c29;
   --glass: rgba(19, 22, 29, 0.55);
   --glass-solid: rgba(19, 22, 29, 0.9);
+  --glass-tint: rgba(19, 22, 29, 0.74);
   --chrome-from: #eef2f7;
   --chrome-to: #9ab9eb;
   --emblem-side-1: #2a2f3b;
@@ -91,12 +86,7 @@
   --color-primary-glow: var(--primary-glow);
   --color-lavender: var(--lavender);
   --color-gold: var(--gold);
-  --color-ember: var(--ember);
   --color-amber: var(--amber);
-  --color-flame: var(--flame);
-  --color-rust: var(--rust);
-  --color-sand: var(--sand);
-  --color-cream: var(--cream);
   --color-graphite: var(--graphite);
 
   --color-bg: var(--bg);
@@ -112,9 +102,7 @@
   --color-accent-hover: var(--accent-hover);
   --color-accent-fg: var(--accent-fg);
   --color-accent-text: var(--accent-text);
-  --color-cool-text: var(--cool-text);
   --color-glow: var(--glow);
-  --color-ring: var(--ring);
   --color-glass: var(--glass);
 
   --font-display: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
@@ -156,7 +144,6 @@
   --text-label--letter-spacing: 0.2em;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 /* ------------------------------------------------------------------
@@ -248,10 +235,6 @@
   border-radius: var(--radius-xl);
 }
 
-@utility chamfer-tr {
-  border-radius: var(--radius-xl);
-}
-
 @utility tri {
   /* The orange triangle from the logo: right angle at bottom-left. */
   display: inline-block;
@@ -259,10 +242,6 @@
   height: 0.5em;
   background: var(--accent);
   clip-path: polygon(0 0, 0 100%, 100% 100%);
-}
-
-@utility hairline {
-  border-color: var(--border);
 }
 
 @utility label {
@@ -308,14 +287,6 @@
 }
 
 /* Brand gradient text (orange to amber) */
-/* Brand red-orange to glow gradient text (signature phrases only). */
-@utility text-gradient {
-  background: linear-gradient(100deg, var(--primary) 15%, var(--primary-glow) 90%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 /* Chrome headline text from the sample site: foreground fading to lavender. */
 @utility text-chrome {
   background: linear-gradient(180deg, var(--chrome-from) 35%, var(--chrome-to) 110%);
@@ -325,13 +296,20 @@
 }
 
 /*
- * Glass panel. Real backdrop blur is reserved for larger screens: on phones,
- * blurring over a moving background is expensive, so a near-solid
- * translucent fill gives the same look for a fraction of the cost.
+ * Glass panel: a translucent tint, no backdrop blur. The 3D background animates
+ * every frame, so a blurred panel would have to re-blur on every frame; with
+ * many panels that halves the scroll frame rate. Phones get a denser fill.
  */
 @utility glass {
   background: var(--glass-solid);
   border: 1px solid var(--border);
+  @media (min-width: 1024px) {
+    background: var(--glass-tint);
+  }
+}
+
+/* Real frosted glass, for the one small surface that earns it (the header bar). */
+@utility glass-blur {
   @media (min-width: 1024px) {
     background: var(--glass);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -358,13 +336,26 @@
   background-size: 300px 300px;
 }
 
+/* Matches the sample's postprocessing vignette (darkness 0.6, offset 0.3). */
+@utility vignette {
+  background: radial-gradient(
+    ellipse closest-side at 50% 50%,
+    transparent 53%,
+    rgb(0 0 0 / 0.05) 70%,
+    rgb(0 0 0 / 0.21) 90%,
+    rgb(0 0 0 / 0.37) 100%,
+    rgb(0 0 0 / 0.55) 120%,
+    rgb(0 0 0 / 0.79) 141%
+  );
+  [data-theme="light"] & {
+    opacity: 0.12;
+  }
+}
+
 @utility pill {
   border-radius: 9999px;
 }
 
-@utility animate-twinkle {
-  animation: twinkle 6s ease-in-out infinite alternate;
-}
 @utility animate-orbit {
   animation: orbit 60s linear infinite;
 }
@@ -374,14 +365,6 @@
 @utility animate-float {
   animation: float-y 6s ease-in-out infinite;
 }
-@utility animate-scan {
-  animation: scan 3.2s ease-in-out infinite;
-}
-
-@utility text-balance {
-  text-wrap: balance;
-}
-
 /* Lenis smooth scrolling (native smooth-scroll must be off while it runs) */
 html.lenis,
 html.lenis body {
@@ -475,32 +458,9 @@ html.lenis {
   animation: page-in 0.5s var(--ease-out-expo) both;
 }
 
-@keyframes twinkle {
-  from {
-    opacity: 0.45;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes orbit {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes scan {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(300%);
-    opacity: 0;
   }
 }
 

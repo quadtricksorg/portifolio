@@ -4,16 +4,6 @@ import { cn } from "@/lib/utils";
 export const MARK_PATH = "M66 0H88V62H66V34L28 66V80H62L78 96H18L0 76V52Z";
 export const TRIANGLE_PATH = "M92 80V96H108Z";
 
-/** Bare mark, coloured by `currentColor` with a red-orange triangle. */
-export function LogoMark({ className, title = "QuadTricks" }: { className?: string; title?: string }) {
-  return (
-    <svg viewBox="0 0 110 100" role={title ? "img" : undefined} aria-label={title || undefined} aria-hidden={title ? undefined : true} className={cn("h-8 w-auto", className)}>
-      <path d={MARK_PATH} fill="currentColor" />
-      <path d={TRIANGLE_PATH} fill="var(--primary)" />
-    </svg>
-  );
-}
-
 type LogoProps = {
   className?: string;
   /** Show the wordmark next to the badge. */

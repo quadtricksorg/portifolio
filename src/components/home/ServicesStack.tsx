@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { services } from "@/content/services";
+import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import type { Service } from "@/lib/schemas";
 import { serviceAccents } from "@/content/media";
 import { SectionHeader } from "@/components/ui/Section";
 import { ServiceGraphic } from "@/components/ui/ServiceGraphic";
 
-type Service = (typeof services)[number];
 
 function StackCard({ s, i, total, progress }: { s: Service; i: number; total: number; progress: MotionValue<number> }) {
   const reduce = useReducedMotion();
@@ -24,7 +23,7 @@ function StackCard({ s, i, total, progress }: { s: Service; i: number; total: nu
 
   return (
     <div ref={cardRef} className="sticky top-0 flex h-[100svh] items-start justify-center pt-20 sm:pt-24">
-      <motion.article
+      <m.article
         style={{ scale, top: `${i * 14}px`, ["--card-accent" as string]: accent.color, ["--card-soft" as string]: accent.soft }}
         className="relative grid h-[min(78svh,620px)] w-full origin-top grid-rows-[40%_1fr] overflow-hidden rounded-[1.75rem] border border-border bg-surface-1 shadow-[0_-20px_60px_-30px_rgba(0,0,0,0.5)] md:grid-cols-2 md:grid-rows-1"
       >
@@ -60,21 +59,21 @@ function StackCard({ s, i, total, progress }: { s: Service; i: number; total: nu
           <div aria-hidden className="absolute inset-0 bg-[radial-gradient(70%_70%_at_50%_45%,var(--card-soft),transparent_70%)]" />
           <div aria-hidden className="stars absolute inset-0 opacity-50" />
           <div aria-hidden className="absolute left-1/2 top-1/2 aspect-square w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-(--card-accent) opacity-30" />
-          <motion.div style={{ scale: artScale, rotate: artRotate }} className="absolute inset-0 flex items-center justify-center p-8">
+          <m.div style={{ scale: artScale, rotate: artRotate }} className="absolute inset-0 flex items-center justify-center p-8">
             <div className="w-[min(70%,320px)] text-fg [&_svg]:text-current">
               <ServiceGraphic slug={s.slug} />
             </div>
-          </motion.div>
+          </m.div>
           <span className="label absolute bottom-4 right-4 text-fg-subtle">{s.shortName}</span>
         </div>
 
-        <motion.div aria-hidden style={{ opacity: dim }} className="pointer-events-none absolute inset-0 z-20 bg-bg" />
-      </motion.article>
+        <m.div aria-hidden style={{ opacity: dim }} className="pointer-events-none absolute inset-0 z-20 bg-bg" />
+      </m.article>
     </div>
   );
 }
 
-export function ServicesStack() {
+export function ServicesStack({ services }: { services: Service[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 

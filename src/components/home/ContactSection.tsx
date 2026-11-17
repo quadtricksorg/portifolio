@@ -2,6 +2,7 @@ import { site } from "@/content/site";
 import { whatsappLink } from "@/lib/utils";
 import { Label } from "@/components/ui/Label";
 import { EnquiryForm } from "@/components/contact/EnquiryForm";
+import { serviceOptions } from "@/lib/contact";
 import { Reveal } from "@/components/motion/Reveal";
 
 /** Contact: every channel plus the enquiry form, over the night-city photo. */
@@ -63,7 +64,7 @@ export function ContactSection() {
               <div className="glass rounded-[1.75rem] p-6 shadow-2xl sm:p-8 lg:p-10">
                 <h3 className="font-display text-h3 text-fg">Project enquiry</h3>
                 <p className="mt-2 text-fg-muted">All fields except company are required.</p>
-                <EnquiryForm className="mt-8" />
+                <EnquiryForm serviceOptions={serviceOptions} className="mt-8" />
               </div>
             </Reveal>
           </div>

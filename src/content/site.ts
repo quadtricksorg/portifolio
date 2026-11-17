@@ -7,6 +7,9 @@ export const site = {
   tagline: "We build what's next",
   description:
     "QuadTricks is a creative technology studio. We design and build websites, web and mobile applications, brand identities, animated videos and cloud solutions for startups and businesses in India, the UAE and worldwide.",
+  /** Search-result snippet: kept under ~160 characters so Google shows it whole. */
+  metaDescription:
+    "Creative technology studio in Kochi. We design and build websites, web and mobile apps, brands, videos and cloud solutions for India, the UAE and worldwide.",
   url: "https://quadtricks.com", // TODO: confirm final domain
   locale: "en-IN",
   founded: "2025", // TODO: confirm founding year
@@ -51,5 +54,3 @@ export const site = {
     { label: "Contact", href: "/#contact", id: "contact" },
   ],
 } as const;
-
-export type SiteConfig = typeof site;

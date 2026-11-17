@@ -14,7 +14,9 @@ import { FAQ } from "@/components/ui/FAQ";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { EnquiryForm } from "@/components/contact/EnquiryForm";
+import { serviceOptions } from "@/lib/contact";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata, breadcrumbs } from "@/lib/seo";
 import { DetailSkeleton } from "@/components/ui/DetailSkeleton";
 
 export function generateStaticParams() {
@@ -25,12 +27,7 @@ export async function generateMetadata({ params }: PageProps<"/services/[slug]">
   const { slug } = await params;
   const service = getService(slug);
   if (!service) return {};
-  return {
-    title: service.seo.title,
-    description: service.seo.description,
-    alternates: { canonical: `/services/${service.slug}` },
-    openGraph: { title: `${service.seo.title} | ${site.name}`, description: service.seo.description },
-  };
+  return pageMetadata({ title: service.seo.title, description: service.seo.description, path: `/services/${service.slug}` });
 }
 
 async function ServiceContent({ params }: { params: PageProps<"/services/[slug]">["params"] }) {
@@ -51,9 +48,17 @@ async function ServiceContent({ params }: { params: PageProps<"/services/[slug]"
           name: service.name,
           description: service.description,
           serviceType: service.name,
-          provider: { "@type": "Organization", name: site.name, url: site.url },
+          url: `${site.url}/services/${service.slug}`,
+          provider: { "@id": `${site.url}/#organization`, "@type": "Organization", name: site.name, url: site.url },
           areaServed: ["India", "United Arab Emirates", "GCC", "Worldwide"],
         }}
+      />
+      <JsonLd
+        data={breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/#services" },
+          { name: service.name, path: `/services/${service.slug}` },
+        ])}
       />
       <JsonLd
         data={{
@@ -219,7 +224,7 @@ async function ServiceContent({ params }: { params: PageProps<"/services/[slug]"
             <p className="mt-5 max-w-[42ch] text-fg-muted">A few details are enough. We reply {site.contact.responseTime} with next steps.</p>
           </div>
           <div className="lg:col-span-7">
-            <EnquiryForm defaultService={service.slug} compact />
+            <EnquiryForm serviceOptions={serviceOptions} defaultService={service.slug} compact />
           </div>
         </div>
       </Section>

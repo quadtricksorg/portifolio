@@ -143,8 +143,3 @@ export function getProject(slug: string): Project | undefined {
 export function getProjectsByCategory(category: Category): Project[] {
   return projects.filter((p) => p.category === category);
 }
-
-export function getFeaturedProjects(limit = 4): Project[] {
-  const featured = projects.filter((p) => p.featured);
-  return (featured.length ? featured : projects).slice(0, limit);
-}

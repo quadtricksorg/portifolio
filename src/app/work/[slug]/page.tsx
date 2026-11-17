@@ -18,6 +18,7 @@ import { CTABand } from "@/components/ui/CTABand";
 import { Reveal } from "@/components/motion/Reveal";
 import { BeforeAfter } from "@/components/work/BeforeAfter";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata, breadcrumbs } from "@/lib/seo";
 import { DetailSkeleton } from "@/components/ui/DetailSkeleton";
 
 /**
@@ -34,16 +35,12 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return { title: slug === COMING_SOON && !projects.length ? "Case studies coming soon" : "Page not found", robots: { index: false } };
-  return {
+  return pageMetadata({
     title: `${project.title} | Work`,
     description: project.summary,
-    alternates: { canonical: `/work/${project.slug}` },
-    openGraph: {
-      title: `${project.title} | ${site.name}`,
-      description: project.summary,
-      images: [{ url: project.cover.src, width: project.cover.width, height: project.cover.height, alt: project.cover.alt }],
-    },
-  };
+    path: `/work/${project.slug}`,
+    image: { url: project.cover.src, width: project.cover.width, height: project.cover.height, alt: project.cover.alt },
+  });
 }
 
 function Meta({ label, children }: { label: string; children: React.ReactNode }) {
@@ -91,9 +88,17 @@ async function ProjectContent({ params }: { params: PageProps<"/work/[slug]">["p
           description: project.summary,
           ...(project.year ? { dateCreated: String(project.year) } : {}),
           ...(project.liveUrl ? { url: project.liveUrl } : {}),
-          creator: { "@type": "Organization", name: site.name, url: site.url },
+          creator: { "@id": `${site.url}/#organization`, "@type": "Organization", name: site.name, url: site.url },
           image: new URL(project.cover.src, site.url).toString(),
         }}
+      />
+
+      <JsonLd
+        data={breadcrumbs([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/#work" },
+          { name: project.title, path: `/work/${project.slug}` },
+        ])}
       />
 
       {/* Hero */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { intro } from "@/content/home";
 import { site } from "@/content/site";
 import { Label } from "@/components/ui/Label";
@@ -12,9 +12,9 @@ function Word({ word, i, total, progress }: { word: string; i: number; total: nu
   // Starts at 0.62 so every word keeps AA contrast while it lights up.
   const opacity = useTransform(progress, [start, start + 1 / total], [0.62, 1]);
   return (
-    <motion.span style={{ opacity }} className="inline">
+    <m.span style={{ opacity }} className="inline">
       {word}{" "}
-    </motion.span>
+    </m.span>
   );
 }
 

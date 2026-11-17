@@ -1,24 +1,9 @@
 import { z } from "zod";
 
-export const CATEGORIES = [
-  // Websites and web apps are presented together as one category.
-  "web-apps",
-  "mobile-apps",
-  "branding",
-  "animation",
-  "cloud",
-] as const;
+import { CATEGORIES, categoryLabels, type Category } from "@/lib/categories";
 
+export { CATEGORIES, categoryLabels, type Category };
 export const categorySchema = z.enum(CATEGORIES);
-export type Category = z.infer<typeof categorySchema>;
-
-export const categoryLabels: Record<Category, string> = {
-  "web-apps": "Web Applications",
-  "mobile-apps": "Mobile Apps",
-  branding: "Branding",
-  animation: "Animation",
-  cloud: "Cloud",
-};
 
 const imageSchema = z.object({
   src: z.string().min(1),

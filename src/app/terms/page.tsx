@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { site } from "@/content/site";
 import { PageIntro } from "@/components/ui/PageIntro";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Terms of Use",
   description: `Terms for using the ${site.name} website.`,
-};
+  path: "/terms",
+});
 
 // TODO: client to review and approve the final terms text before launch.
 export default function TermsPage() {

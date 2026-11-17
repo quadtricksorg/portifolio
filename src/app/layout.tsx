@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, JetBrains_Mono, Unbounded } from "next/font/google";
 import { site } from "@/content/site";
 import { Header } from "@/components/layout/Header";
+import { MotionProvider } from "@/components/motion/MotionProvider";
+import { services } from "@/content/services";
 import { Footer } from "@/components/layout/Footer";
 import { themeInitScript } from "@/components/layout/ThemeToggle";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
@@ -36,19 +38,21 @@ export const metadata: Metadata = {
     default: `${site.name} | ${site.tagline}`,
     template: `%s | ${site.name}`,
   },
-  description: site.description,
+  description: site.metaDescription,
+  applicationName: site.name,
   openGraph: {
     type: "website",
     siteName: site.name,
     locale: "en_IN",
     title: `${site.name} | ${site.tagline}`,
-    description: site.description,
+    description: site.metaDescription,
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name} | ${site.tagline}`,
-    description: site.description,
+    description: site.metaDescription,
   },
+  formatDetection: { telephone: false, email: false, address: false },
   robots: { index: true, follow: true },
 };
 
@@ -83,24 +87,36 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           data={{
             "@context": "https://schema.org",
             "@type": "Organization",
+            "@id": `${site.url}/#organization`,
             name: site.name,
             slogan: site.tagline,
             description: site.description,
             url: site.url,
             logo: `${site.url}/icon.svg`,
             email: site.contact.email,
+            telephone: `+${site.contact.phones[0].number}`,
+            address: { "@type": "PostalAddress", addressLocality: site.contact.locations[0].city, addressRegion: "Kerala", addressCountry: "IN" },
+            contactPoint: site.contact.phones.map((p) => ({
+              "@type": "ContactPoint",
+              telephone: `+${p.number}`,
+              email: site.contact.email,
+              contactType: "sales",
+              availableLanguage: ["English"],
+            })),
             areaServed: ["India", "United Arab Emirates", "GCC", "United States", "Canada", "United Kingdom"],
-            sameAs: Object.values(site.social).filter(Boolean),
+            ...(Object.values(site.social).some(Boolean) ? { sameAs: Object.values(site.social).filter(Boolean) } : {}),
           }}
         />
         <BrandScene />
         <SmoothScroll />
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <ScrollHelper />
+        <MotionProvider>
+          <Header services={services.map(({ slug, index, shortName }) => ({ slug, index, shortName }))} />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <ScrollHelper />
+        </MotionProvider>
       </body>
     </html>
   );

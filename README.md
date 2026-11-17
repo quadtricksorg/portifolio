@@ -67,15 +67,13 @@ Any Node.js host that runs `next start` also works.
 src/
   app/            Routes, metadata, sitemap, robots, social image, contact API
   components/
-    layout/       Header, footer, theme toggle
-    home/         Homepage sections and hero geometry
-    services/     Services index
-    work/         Filterable work grid, before/after slider
-    process/      Scroll-driven process story
-    about/        About page visuals
+    brand/        3D background scene, emblem, discipline orbit
+    layout/       Header, footer, theme toggle, scroll helper
+    home/         The single-page sections (hero to contact)
+    work/         Project cards and detail-page pieces
     contact/      Enquiry form
-    motion/       Reveal, text reveal, parallax, smooth scroll
-    ui/           Design-system primitives (button, label, frames, FAQ, fields...)
+    motion/       Reveal, text reveal, marquee, smooth scroll
+    ui/           Design-system primitives (button, label, sections, FAQ, fields...)
     seo/          JSON-LD helper
   content/        All editable content
   lib/            Schemas, contact validation, utilities
@@ -88,3 +86,24 @@ Tokens are CSS variables in `src/app/globals.css`, mapped to Tailwind utilities 
 Brand utilities: `chamfer` (cut corner from the logo), `tri` (the orange triangle indicator), `label` (mono uppercase eyebrow), `container-x` and `section-y` (layout rhythm).
 
 All motion respects `prefers-reduced-motion`. Smooth scrolling is disabled on touch devices and for reduced-motion users.
+
+## SEO and performance
+
+- Every page builds its metadata with `pageMetadata()` in `src/lib/seo.ts`: title, description, canonical URL, Open Graph and Twitter cards, all in one place. Detail pages also emit breadcrumb structured data.
+- The homepage search snippet is `site.metaDescription` in `src/content/site.ts`; keep it under about 160 characters.
+- Set the real domain in `site.url` before launch: canonical URLs, the sitemap, robots.txt and structured data all derive from it.
+- Client components receive content as props from server components. Do not import `src/content/*` modules that validate with zod (services, projects) or `src/lib/schemas.ts` into a `"use client"` file, or zod ships to the browser; category labels live in the zod-free `src/lib/categories.ts`.
+- Animations use framer-motion's slim `m.*` components inside `MotionProvider` (strict `LazyMotion`). Importing `motion` instead raises an error, by design.
+
+## 3D background
+
+The site-wide "solar system" background (chrome "4" emblem, red glow, orbit rings, sparkles) is a three.js port of the original sample site's scene: `src/components/brand/emblem-scene.ts`, mounted by `BrandScene.tsx`.
+
+- It loads after the page has painted (browser idle time) and fades in; until then a CSS starfield and rings show.
+- Devices without hardware WebGL keep the CSS fallback and never download three.js.
+- Phones: lower resolution, simpler metal material, fewer sparkles, a sprite glow instead of bloom.
+- All devices: quality steps down automatically if the frame rate drops; rendering stops while the tab is hidden; reduced motion turns off float, spin and twinkle.
+- Light and dark themes are read from `data-theme` and update live.
+- Frosted blur (`glass-blur`) is only on the header. Panels use `glass`, a translucent tint without blur, because blurring over an animated background every frame is costly.
+
+The scroll path of the emblem is the `KEYS` table at the top of `emblem-scene.ts` (six keyframes across the whole page).

@@ -40,5 +40,3 @@ export const processStages = [
     youGet: ["Bug fixes for 12 months", "Small content changes", "Clear quotes for anything new"],
   },
 ] as const;
-
-export type ProcessStage = (typeof processStages)[number];

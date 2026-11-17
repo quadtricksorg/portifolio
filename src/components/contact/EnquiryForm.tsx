@@ -2,8 +2,8 @@
 
 import Script from "next/script";
 import { useId, useRef, useState, type FormEvent } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { serviceOptions, type ContactFieldErrors } from "@/lib/contact";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import type { ContactFieldErrors, ServiceOption } from "@/lib/contact";
 import { site } from "@/content/site";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
@@ -15,13 +15,15 @@ type Status = "idle" | "submitting" | "success" | "error";
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 type EnquiryFormProps = {
+  /** Choices for the service field (from the server, so zod stays off the client). */
+  serviceOptions: readonly ServiceOption[];
   defaultService?: string;
   /** Hides the company field for shorter, in-page forms. */
   compact?: boolean;
   className?: string;
 };
 
-export function EnquiryForm({ defaultService = "not-sure", compact, className }: EnquiryFormProps) {
+export function EnquiryForm({ serviceOptions, defaultService = "not-sure", compact, className }: EnquiryFormProps) {
   const uid = useId();
   const id = (n: string) => `${uid}-${n}`;
   const formRef = useRef<HTMLFormElement>(null);
@@ -74,7 +76,7 @@ export function EnquiryForm({ defaultService = "not-sure", compact, className }:
 
       <AnimatePresence mode="wait" initial={false}>
         {status === "success" ? (
-          <motion.div
+          <m.div
             key="success"
             role="status"
             initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -88,9 +90,9 @@ export function EnquiryForm({ defaultService = "not-sure", compact, className }:
             <Button variant="secondary" onClick={() => setStatus("idle")}>
               Send another message
             </Button>
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.form
+          <m.form
             key="form"
             ref={formRef}
             onSubmit={onSubmit}
@@ -176,7 +178,7 @@ export function EnquiryForm({ defaultService = "not-sure", compact, className }:
                 {error}
               </p>
             )}
-          </motion.form>
+          </m.form>
         )}
       </AnimatePresence>
     </div>

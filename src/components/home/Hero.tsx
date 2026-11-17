@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { hero } from "@/content/home";
 import { ButtonLink } from "@/components/ui/Button";
 
@@ -25,7 +25,7 @@ function CyclingWord() {
     <span className="relative inline-block overflow-hidden pb-[0.1em] align-bottom">
       <span aria-hidden>
         <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
+          <m.span
             key={word}
             initial={{ y: "100%", opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -35,7 +35,7 @@ function CyclingWord() {
           >
             {word}
             {isLast && <span className="text-fg">.</span>}
-          </motion.span>
+          </m.span>
         </AnimatePresence>
       </span>
       <span className="sr-only">{hero.words[last]}</span>
@@ -45,7 +45,8 @@ function CyclingWord() {
 
 /**
  * Hero in the style of the sample site: large chrome headline on the left,
- * the 3D-style emblem (rendered by the page-wide BrandScene) on the right.
+ * the 3D emblem (rendered by the page-wide BrandScene) on the right. On small
+ * screens the emblem sits behind the copy, so a soft scrim keeps text readable.
  * Entrances are CSS so the headline paints immediately (fast LCP).
  */
 export function Hero() {
@@ -58,8 +59,12 @@ export function Hero() {
 
   return (
     <section ref={ref} id="top" className="relative isolate" aria-labelledby="hero-title">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(95%_42%_at_30%_56%,color-mix(in_srgb,var(--bg)_82%,transparent)_30%,transparent_80%)] lg:hidden"
+      />
       <div className="container-x flex min-h-[100svh] flex-col justify-center pt-28 pb-24 sm:pt-32 lg:pt-36">
-        <motion.div className="max-w-[46rem]" style={{ y: copyY, opacity: copyOpacity }}>
+        <m.div className="max-w-[46rem]" style={{ y: copyY, opacity: copyOpacity }}>
           <div {...up(0.05)}>
             <span className="label inline-flex items-center gap-2 text-fg-muted">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
@@ -81,7 +86,7 @@ export function Hero() {
               Explore our work
             </ButtonLink>
           </div>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Scroll cue */}

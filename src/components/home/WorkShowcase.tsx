@@ -3,9 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { projects } from "@/content/projects";
-import { categoryLabels } from "@/lib/schemas";
+import { m, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { categoryLabels } from "@/lib/categories";
 import type { Project } from "@/lib/schemas";
 import { Label } from "@/components/ui/Label";
 import { ButtonLink } from "@/components/ui/Button";
@@ -65,7 +64,7 @@ function ShowcaseCard({ p, i, total, className }: { p: Project; i: number; total
  * project track horizontally (native scroll is never blocked). Mobile/tablet:
  * a swipeable snap carousel.
  */
-export function WorkShowcase() {
+export function WorkShowcase({ projects }: { projects: Project[] }) {
   // Single page: show every project here.
   const list = projects;
   const outer = useRef<HTMLDivElement>(null);
@@ -122,7 +121,7 @@ export function WorkShowcase() {
       >
         <div className={reduce ? "py-28" : "sticky top-0 flex h-[100svh] flex-col justify-center gap-8 overflow-hidden pt-20"}>
           {header}
-          <motion.div
+          <m.div
             ref={track}
             style={{ x: reduce ? 0 : smoothX }}
             className={reduce ? "container-x grid grid-cols-2 gap-8" : "flex w-max gap-8 pl-[max(3rem,calc((100vw-1536px)/2+3rem))] pr-[12vw]"}
@@ -146,11 +145,11 @@ export function WorkShowcase() {
                 </span>
               </Link>
             )}
-          </motion.div>
+          </m.div>
           {!reduce && (
             <div className="container-x">
               <div className="h-px w-full bg-border-strong">
-                <motion.div className="h-px bg-accent" style={{ width: bar }} />
+                <m.div className="h-px bg-accent" style={{ width: bar }} />
               </div>
             </div>
           )}

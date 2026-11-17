@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type Item = { q: string; a: string };
@@ -43,7 +43,7 @@ export function FAQ({ items, className }: { items: readonly Item[]; className?: 
             </button>
             <AnimatePresence initial={false}>
               {isOpen && (
-                <motion.div
+                <m.div
                   id={id}
                   key="content"
                   initial={reduce ? false : { height: 0, opacity: 0 }}
@@ -53,7 +53,7 @@ export function FAQ({ items, className }: { items: readonly Item[]; className?: 
                   className="overflow-hidden"
                 >
                   <p className="max-w-[62ch] pb-6 pl-9 text-fg-muted">{item.a}</p>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </li>

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { site } from "@/content/site";
 import { PageIntro } from "@/components/ui/PageIntro";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description: `How ${site.name} handles the information you share with us.`,
-};
+  path: "/privacy",
+});
 
 // TODO: client to review and approve the final policy text before launch.
 export default function PrivacyPage() {

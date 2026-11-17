@@ -5,6 +5,7 @@ export const serviceOptions = [
   ...services.map((s) => ({ value: s.slug, label: s.name })),
   { value: "not-sure", label: "Not sure yet" },
 ] as const;
+export type ServiceOption = { value: string; label: string };
 
 const serviceValues = serviceOptions.map((o) => o.value) as [string, ...string[]];
 

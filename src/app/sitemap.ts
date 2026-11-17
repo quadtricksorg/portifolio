@@ -13,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticPages,
     ...services.map((s) => ({ url: url(`/services/${s.slug}`), changeFrequency: "monthly" as const, priority: 0.8 })),
-    ...projects.map((p) => ({ url: url(`/work/${p.slug}`), changeFrequency: "yearly" as const, priority: 0.7 })),
+    ...projects.map((p) => ({
+      url: url(`/work/${p.slug}`),
+      changeFrequency: "yearly" as const,
+      priority: 0.7,
+      // Image sitemap entries help the project screens appear in image search.
+      images: [p.cover, ...p.gallery].map((img) => url(img.src)),
+    })),
   ];
 }

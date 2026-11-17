@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
+import { m, useReducedMotion, type HTMLMotionProps } from "framer-motion";
 import type { ReactNode } from "react";
 
 type Tag = "div" | "section" | "article" | "ul" | "ol" | "li";
@@ -10,13 +10,13 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 // Static map so components are never created during render.
 // All motion HTML components share the same prop surface for our usage.
 const MOTION = {
-  div: motion.div,
-  section: motion.section,
-  article: motion.article,
-  ul: motion.ul,
-  ol: motion.ol,
-  li: motion.li,
-} as unknown as Record<Tag, typeof motion.div>;
+  div: m.div,
+  section: m.section,
+  article: m.article,
+  ul: m.ul,
+  ol: m.ol,
+  li: m.li,
+} as unknown as Record<Tag, typeof m.div>;
 
 type BaseProps = Omit<HTMLMotionProps<"div">, "children"> & { children: ReactNode; as?: Tag };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
+import { m, useReducedMotion, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type VelocityMarqueeProps = {
@@ -28,7 +28,7 @@ export function VelocityMarquee({ children, duration = 40, reverse, className, c
   const skew = useTransform(smooth, [-2500, 0, 2500], reduce ? [0, 0, 0] : [7, 0, -7]);
 
   return (
-    <motion.div style={{ skewX: skew }} className={cn("group/marquee flex overflow-hidden whitespace-nowrap", className)}>
+    <m.div style={{ skewX: skew }} className={cn("group/marquee flex overflow-hidden whitespace-nowrap", className)}>
       <div
         className="flex shrink-0 flex-nowrap will-change-transform motion-safe:animate-[marquee-half_var(--marquee-d)_linear_infinite] group-hover/marquee:[animation-play-state:paused]"
         style={{
@@ -42,6 +42,6 @@ export function VelocityMarquee({ children, duration = 40, reverse, className, c
           </div>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 }

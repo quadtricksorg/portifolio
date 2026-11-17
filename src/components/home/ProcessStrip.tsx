@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { processStages } from "@/content/process";
 import { SectionHeader } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
@@ -9,10 +9,11 @@ import { ButtonLink } from "@/components/ui/Button";
 function Stage({ s, i, total, progress }: { s: (typeof processStages)[number]; i: number; total: number; progress: MotionValue<number> }) {
   const reduce = useReducedMotion();
   const at = (i + 0.5) / total;
-  const lit = useTransform(progress, [at - 0.12, at], reduce ? [1, 1] : [0.6, 1]);
+  // Floor of 0.85 keeps the card text at AA contrast while it is still "unlit".
+  const lit = useTransform(progress, [at - 0.12, at], reduce ? [1, 1] : [0.85, 1]);
   const y = useTransform(progress, [at - 0.15, at], reduce ? [0, 0] : [24, 0]);
   return (
-    <motion.li
+    <m.li
       style={{ opacity: lit, y }}
       className="glass relative flex w-[78vw] max-w-[320px] shrink-0 snap-start flex-col gap-4 rounded-[1.5rem] p-6 sm:w-[44vw] lg:w-auto lg:max-w-none lg:p-7"
     >
@@ -28,7 +29,7 @@ function Stage({ s, i, total, progress }: { s: (typeof processStages)[number]; i
           </li>
         ))}
       </ul>
-    </motion.li>
+    </m.li>
   );
 }
 
@@ -59,7 +60,7 @@ export function ProcessStrip() {
       <div ref={ref} className="relative mt-14 lg:mt-20 lg:pt-10">
         <div aria-hidden className="container-x absolute inset-x-0 top-0 hidden lg:block">
           <div className="h-px w-full bg-border-strong">
-            <motion.div className="h-px bg-[linear-gradient(90deg,var(--accent),var(--amber))]" style={{ width: line }} />
+            <m.div className="h-px bg-[linear-gradient(90deg,var(--accent),var(--amber))]" style={{ width: line }} />
           </div>
         </div>
         <ol

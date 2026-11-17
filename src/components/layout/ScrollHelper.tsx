@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { scrollToTarget } from "@/components/motion/SmoothScroll";
 import { cn } from "@/lib/utils";
 
@@ -116,7 +116,7 @@ export function ScrollHelper() {
       {/* Floating controls */}
       <AnimatePresence>
         {shown && (
-          <motion.div
+          <m.div
             key="controls"
             initial={reduce ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -128,7 +128,7 @@ export function ScrollHelper() {
               <div className="relative xl:hidden">
                 <AnimatePresence>
                   {open && (
-                    <motion.ul
+                    <m.ul
                       key="sheet"
                       initial={reduce ? false : { opacity: 0, y: 8, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -152,7 +152,7 @@ export function ScrollHelper() {
                           </button>
                         </li>
                       ))}
-                    </motion.ul>
+                    </m.ul>
                   )}
                 </AnimatePresence>
                 <button
@@ -178,13 +178,13 @@ export function ScrollHelper() {
             >
               <svg viewBox="0 0 48 48" className="absolute inset-0 h-full w-full -rotate-90" aria-hidden>
                 <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeOpacity="0.2" strokeWidth="2" />
-                <motion.circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="2" style={{ pathLength: progress }} />
+                <m.circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="2" style={{ pathLength: progress }} />
               </svg>
               <svg viewBox="0 0 24 24" className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M12 19V5M5 12l7-7 7 7" />
               </svg>
             </button>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 
 type TextRevealProps = {
   text: string;
@@ -50,7 +50,7 @@ export function TextReveal({ text, className, delay = 0, immediate, wordClassNam
   return (
     <span className={className}>
       <span className="sr-only">{text}</span>
-      <motion.span
+      <m.span
         aria-hidden
         initial="hidden"
         whileInView="show"
@@ -59,16 +59,16 @@ export function TextReveal({ text, className, delay = 0, immediate, wordClassNam
       >
         {words.map((w, i) => (
           <span key={i} className="-mb-[0.12em] inline-block overflow-hidden pb-[0.12em] align-top">
-            <motion.span
+            <m.span
               className={`inline-block ${wordClassName ?? ""}`}
               variants={{ hidden: { y: "105%" }, show: { y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } }}
             >
               {w}
               {i < words.length - 1 ? " " : ""}
-            </motion.span>
+            </m.span>
           </span>
         ))}
-      </motion.span>
+      </m.span>
     </span>
   );
 }

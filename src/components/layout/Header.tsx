@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { site } from "@/content/site";
-import { services } from "@/content/services";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/Logo";
 import { ButtonLink } from "@/components/ui/Button";
@@ -20,7 +19,10 @@ function subscribeScroll(cb: () => void) {
   return () => window.removeEventListener("scroll", cb);
 }
 
-export function Header() {
+/** Service links for the mobile menu (passed from the server layout). */
+export type NavService = { slug: string; index: string; shortName: string };
+
+export function Header({ services }: { services: NavService[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [menuPath, setMenuPath] = useState(pathname);
@@ -77,7 +79,7 @@ export function Header() {
       <div
         className={cn(
           "flex h-14 items-center justify-between rounded-2xl border px-2.5 pl-3 transition-[background-color,border-color,box-shadow] duration-500 lg:h-16 lg:px-3 lg:pl-4",
-          open ? "border-border bg-surface-1" : scrolled ? "glass shadow-[0_10px_40px_-20px_rgba(0,0,0,0.5)]" : "border-border bg-transparent",
+          open ? "border-border bg-surface-1" : scrolled ? "glass glass-blur shadow-[0_10px_40px_-20px_rgba(0,0,0,0.5)]" : "border-border bg-transparent",
         )}
       >
         <Link href="/" aria-label="QuadTricks home" className="relative z-50" onClick={(e) => onSectionClick(e, "/#top")}>
@@ -152,7 +154,7 @@ export function Header() {
       {/* Mobile full-screen menu */}
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id="mobile-menu"
             key="menu"
             initial={{ opacity: 0 }}
@@ -164,7 +166,7 @@ export function Header() {
             <nav aria-label="Mobile" className="container-x flex flex-1 flex-col pt-6 pb-8">
               <ul className="flex flex-col">
                 {site.nav.map((item, i) => (
-                  <motion.li
+                  <m.li
                     key={item.href}
                     initial={{ opacity: 0, y: reduce ? 0 : 16 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -199,11 +201,11 @@ export function Header() {
                         ))}
                       </ul>
                     )}
-                  </motion.li>
+                  </m.li>
                 ))}
               </ul>
 
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: reduce ? 0 : 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: reduce ? 0 : 0.35, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
@@ -215,9 +217,9 @@ export function Header() {
                 <a href={`mailto:${site.contact.email}`} className="text-center text-sm text-fg-muted hover:text-fg">
                   {site.contact.email}
                 </a>
-              </motion.div>
+              </m.div>
             </nav>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>

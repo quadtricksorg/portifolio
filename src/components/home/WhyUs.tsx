@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { m, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { advantages } from "@/content/home";
 import { SectionHeader } from "@/components/ui/Section";
 import { Reveal } from "@/components/motion/Reveal";
@@ -37,7 +37,7 @@ export function WhyUs() {
 
   return (
     <section ref={ref} id="why" aria-labelledby="why-title" className="relative overflow-hidden">
-      <motion.div aria-hidden style={{ rotate: spin }} className="pointer-events-none absolute -right-40 top-20 -z-10 h-[32rem] w-[32rem] rounded-full border border-dashed border-primary/30" />
+      <m.div aria-hidden style={{ rotate: spin }} className="pointer-events-none absolute -right-40 top-20 -z-10 h-[32rem] w-[32rem] rounded-full border border-dashed border-primary/30" />
       <div className="container-x section-y">
         <SectionHeader eyebrow="Why QuadTricks" index="04" titleId="why-title" title="Senior minds. Startup speed." lead="Four reasons to work with us. No invented numbers, no borrowed logos." />
         <div className="mt-12 grid gap-4 sm:gap-5 lg:mt-16 lg:grid-cols-12">
@@ -47,15 +47,15 @@ export function WhyUs() {
               <Reveal key={a.index} delay={i * 0.08} className={cn("relative isolate rounded-[1.75rem]", t.className)}>
                 {t.tint && <div aria-hidden className={cn("pointer-events-none absolute inset-0 -z-10 rounded-[1.75rem]", t.tint)} />}
                 {t.rings && (
-                  <motion.div aria-hidden style={{ rotate: spin }} className="pointer-events-none absolute -right-16 -top-16 -z-10 h-64 w-64">
+                  <m.div aria-hidden style={{ rotate: spin }} className="pointer-events-none absolute -right-16 -top-16 -z-10 h-64 w-64">
                     <svg viewBox="0 0 200 200" className="h-full w-full">
                       <ellipse cx="100" cy="100" rx="96" ry="40" fill="none" stroke="var(--primary)" strokeOpacity="0.55" />
                       <ellipse cx="100" cy="100" rx="70" ry="70" fill="none" stroke="var(--lavender)" strokeOpacity="0.45" strokeDasharray="3 5" />
                       <circle cx="196" cy="100" r="3" fill="var(--primary)" />
                     </svg>
-                  </motion.div>
+                  </m.div>
                 )}
-                <motion.div
+                <m.div
                   style={{ y: t.y }}
                   className={cn("relative flex h-full flex-col gap-5 p-7 sm:p-9", t.big && "lg:min-h-[460px]", t.wide && "lg:flex-row lg:items-center lg:gap-12")}
                 >
@@ -76,7 +76,7 @@ export function WhyUs() {
                   {t.big && (
                     <span aria-hidden className="pointer-events-none absolute right-6 top-6 h-28 w-28 bg-white opacity-20 [clip-path:polygon(0_0,0_100%,100%_100%)] sm:h-40 sm:w-40" />
                   )}
-                </motion.div>
+                </m.div>
               </Reveal>
             );
           })}

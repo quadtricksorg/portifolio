@@ -1,18 +1,10 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { Emblem } from "@/components/brand/Emblem";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import type { EmblemScene } from "./emblem-scene";
 
-const mq = "(min-width: 1024px)";
-function subscribe(cb: () => void) {
-  const m = window.matchMedia(mq);
-  m.addEventListener("change", cb);
-  return () => m.removeEventListener("change", cb);
-}
-
-/** Orbit rings: two tilted ellipses. They only rotate on large screens. */
+/** Orbit rings: two tilted ellipses (SVG). Used inside panels, and as the pre-WebGL fallback. */
 export function Orbits({ className, animate = true }: { className?: string; animate?: boolean }) {
   return (
     <div aria-hidden className={cn("pointer-events-none absolute inset-0 flex items-center justify-center", className)}>
@@ -33,47 +25,114 @@ export function Orbits({ className, animate = true }: { className?: string; anim
 }
 
 /**
- * Site-wide background scene (homepage): gradient glows, a starfield, orbit
- * rings and the 3D-style emblem, all theme-aware and image-free.
- * Performance: one fixed layer; the emblem is a single static SVG moved with
- * transforms tied to scroll; rotation/twinkle run only on large screens.
+ * True when WebGL would run on a real GPU. Software renderers (SwiftShader,
+ * llvmpipe, Microsoft Basic Render) draw on the CPU and would stall the page every
+ * frame, so those devices keep the CSS fallback and never download three.js.
+ */
+function hasHardwareWebGL() {
+  try {
+    const c = document.createElement("canvas");
+    const gl = (c.getContext("webgl2", { failIfMajorPerformanceCaveat: true }) ??
+      c.getContext("webgl", { failIfMajorPerformanceCaveat: true })) as WebGLRenderingContext | null;
+    if (!gl) return false;
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const name = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return !/swiftshader|llvmpipe|software|basic render/i.test(name);
+  } catch {
+    return false;
+  }
+}
+
+type IdleWindow = Window & {
+  requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+  cancelIdleCallback?: (id: number) => void;
+};
+
+/**
+ * Site-wide "solar system" background: the 3D chrome emblem, orbit rings and
+ * sparkles from the original QuadTricks sample, rendered with three.js.
+ *
+ * Loading: the page paints first with a static CSS fallback (theme colour,
+ * stars, rings). The WebGL scene is fetched when the browser is idle and fades
+ * in over it, so it never delays the headline. See emblem-scene.ts for the
+ * per-device quality settings.
  */
 export function BrandScene() {
-  const reduce = useReducedMotion();
-  const desktop = useSyncExternalStore(subscribe, () => window.matchMedia(mq).matches, () => true);
-  const { scrollYProgress } = useScroll();
-  const p = useSpring(scrollYProgress, { stiffness: 60, damping: 20, mass: 0.6 });
-  const still = reduce ? 0 : 1;
+  const hostRef = useRef<HTMLDivElement>(null);
+  // Once the 3D scene has faded in, the CSS fallback is unmounted so it is never painted underneath.
+  const [live, setLive] = useState(false);
 
-  // The emblem drifts between sides as the page scrolls, tilting in 3D.
-  const stops = [0, 0.12, 0.3, 0.5, 0.7, 0.88, 1];
-  const xs = desktop ? ["20vw", "16vw", "-26vw", "24vw", "-24vw", "18vw", "0vw"] : ["14vw", "14vw", "-18vw", "16vw", "-16vw", "12vw", "0vw"];
-  const x = useTransform(p, stops, reduce ? xs.map(() => xs[0]) : xs);
-  const y = useTransform(p, stops, desktop ? ["2vh", "6vh", "4vh", "8vh", "2vh", "6vh", "4vh"] : ["26vh", "10vh", "0vh", "4vh", "0vh", "4vh", "0vh"]);
-  const rotate = useTransform(p, [0, 1], [0, still * -28]);
-  const rotateY = useTransform(p, stops, [-18, -8, 22, -20, 18, -12, 0].map((v) => v * still));
-  const rotateX = useTransform(p, [0, 0.5, 1], [8 * still, -6 * still, 4 * still]);
-  const scale = useTransform(p, [0, 0.12, 1], desktop ? [1, 0.82, 0.72] : [1, 0.85, 0.8]);
-  const opacity = useTransform(p, [0, 0.1, 0.18, 0.95, 1], desktop ? [1, 1, 0.42, 0.42, 0.55] : [0.4, 0.3, 0.16, 0.16, 0.24]);
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    const w = window as IdleWindow;
+    let cancelled = false;
+    let dispose: (() => void) | undefined;
+    let observer: MutationObserver | undefined;
+
+    const start = () => {
+      if (!hasHardwareWebGL()) return;
+      import("./emblem-scene")
+        .then(({ createEmblemScene }) => {
+          if (cancelled) return;
+          const canvas = document.createElement("canvas");
+          canvas.className = "absolute inset-0 h-full w-full opacity-0 transition-opacity duration-1000 ease-out";
+          host.prepend(canvas);
+          let scene: EmblemScene;
+          try {
+            scene = createEmblemScene({
+              canvas,
+              reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+              onReady: () => {
+                canvas.classList.replace("opacity-0", "opacity-100");
+                window.setTimeout(() => !cancelled && setLive(true), 1100);
+              },
+            });
+          } catch {
+            // No WebGL: keep the CSS fallback.
+            canvas.remove();
+            return;
+          }
+          observer = new MutationObserver(() => scene.setTheme());
+          observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+          dispose = () => {
+            scene.dispose();
+            canvas.remove();
+            setLive(false);
+          };
+        })
+        .catch(() => {
+          /* network error: the fallback stays */
+        });
+    };
+
+    const id = w.requestIdleCallback ? w.requestIdleCallback(start, { timeout: 1500 }) : window.setTimeout(start, 400);
+    return () => {
+      cancelled = true;
+      if (w.cancelIdleCallback) w.cancelIdleCallback(id);
+      else window.clearTimeout(id);
+      observer?.disconnect();
+      dispose?.();
+    };
+  }, []);
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* Gradient glows */}
-      <div className="orb-primary absolute -bottom-[25%] -left-[20%] h-[80vmax] w-[80vmax]" />
-      <div className="orb-cool absolute -right-[20%] -top-[25%] h-[70vmax] w-[70vmax]" />
-      {/* Stars */}
-      <div className="stars absolute inset-0 opacity-70 motion-safe:lg:animate-twinkle" />
-      {/* Orbit rings */}
-      <Orbits className="opacity-80" />
-      {/* Emblem */}
-      <div className="absolute inset-0 flex items-center justify-center [perspective:1400px]">
-        <motion.div
-          style={{ x, y, rotate, rotateY, rotateX, scale, opacity }}
-          className="w-[min(78vw,340px)] will-change-transform sm:w-[min(60vw,460px)] lg:w-[min(42vw,620px)]"
-        >
-          <Emblem depth={desktop ? 14 : 7} />
-        </motion.div>
-      </div>
+    // will-change + contain: its own compositor layer, so scrolling content above never repaints it.
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-lvh overflow-hidden bg-bg [contain:strict] will-change-transform"
+    >
+      {/* Fallback, visible until the canvas fades in over it. */}
+      {!live && (
+        <>
+          <div className="stars absolute inset-0 opacity-60" />
+          <Orbits animate={false} className="opacity-60" />
+        </>
+      )}
+      <div ref={hostRef} className="absolute inset-0" />
+      {/* Vignette (the sample's post effect, done in CSS). */}
+      <div className="vignette absolute inset-0" />
     </div>
   );
 }
