@@ -15,8 +15,6 @@ import { ProjectCard } from "@/components/ui/ProjectCard";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { EnquiryForm } from "@/components/contact/EnquiryForm";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { PhotoBackdrop } from "@/components/ui/PhotoBackdrop";
-import { serviceHeroPhotos } from "@/content/media";
 import { DetailSkeleton } from "@/components/ui/DetailSkeleton";
 
 export function generateStaticParams() {
@@ -66,9 +64,8 @@ async function ServiceContent({ params }: { params: PageProps<"/services/[slug]"
       />
 
       {/* 1. Hero */}
-      <section data-theme="dark" className="relative isolate overflow-hidden bg-bg text-fg">
-        <PhotoBackdrop photo={serviceHeroPhotos[service.slug]} priority hero kenburns overlay="left" parallax={120} />
-        <div aria-hidden className="blob-orange animate-drift pointer-events-none absolute -left-[15%] bottom-0 -z-10 h-[50vw] max-h-[700px] w-[50vw] max-w-[700px] opacity-40" />
+      <section className="relative isolate overflow-hidden text-fg">
+        <div aria-hidden className="orb-primary pointer-events-none absolute -left-[15%] bottom-0 -z-10 h-[50vw] max-h-[700px] w-[50vw] max-w-[700px]" />
         <div className="container-x flex min-h-[86svh] flex-col justify-end pt-28 pb-14 sm:pt-36 sm:pb-20 lg:pb-24">
         <nav aria-label="Breadcrumb" className="mb-8">
           <ol className="label flex items-center gap-2 text-fg-muted">
@@ -88,19 +85,19 @@ async function ServiceContent({ params }: { params: PageProps<"/services/[slug]"
             <Label indicator index={service.index} className="text-fg">
               {service.name}
             </Label>
-            <h1 className="mt-5 text-h1 text-fg">{service.promise}</h1>
+            <h1 className="text-chrome mt-5 font-display text-h1 font-bold">{service.promise}</h1>
             <p className="mt-6 max-w-[56ch] text-lead text-fg-muted">{service.description}</p>
             <div className="mt-10 flex flex-col gap-3 xs:flex-row">
               <ButtonLink href="#enquire" size="lg" indicator>
                 Discuss your project
               </ButtonLink>
-              <ButtonLink href="/#work" size="lg" variant="secondary" className="bg-white/5 backdrop-blur-sm">
+              <ButtonLink href="/#work" size="lg" variant="secondary">
                 See our work
               </ButtonLink>
             </div>
           </div>
           <div className="lg:col-span-5">
-            <div className="chamfer mx-auto hidden max-w-[420px] border border-white/15 bg-black/35 p-8 backdrop-blur-md sm:p-12 lg:block">
+            <div className="glass mx-auto hidden max-w-[420px] rounded-[2rem] p-8 sm:p-12 lg:block">
               <ServiceGraphic slug={service.slug} />
             </div>
           </div>

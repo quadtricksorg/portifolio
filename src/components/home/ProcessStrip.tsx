@@ -3,10 +3,8 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { processStages } from "@/content/process";
-import { photos } from "@/content/media";
 import { SectionHeader } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
-import { PhotoBackdrop } from "@/components/ui/PhotoBackdrop";
 
 function Stage({ s, i, total, progress }: { s: (typeof processStages)[number]; i: number; total: number; progress: MotionValue<number> }) {
   const reduce = useReducedMotion();
@@ -16,11 +14,11 @@ function Stage({ s, i, total, progress }: { s: (typeof processStages)[number]; i
   return (
     <motion.li
       style={{ opacity: lit, y }}
-      className="relative flex w-[78vw] max-w-[320px] shrink-0 snap-start flex-col gap-4 rounded-md border border-white/10 bg-black/35 p-6 backdrop-blur-sm sm:w-[44vw] lg:w-auto lg:max-w-none lg:border-0 lg:bg-transparent lg:p-0 lg:pt-10 lg:backdrop-blur-none"
+      className="glass relative flex w-[78vw] max-w-[320px] shrink-0 snap-start flex-col gap-4 rounded-[1.5rem] p-6 sm:w-[44vw] lg:w-auto lg:max-w-none lg:p-7"
     >
-      <span aria-hidden className="absolute left-0 top-0 hidden h-3 w-3 -translate-y-1/2 rotate-45 border-2 border-accent bg-bg lg:block" />
-      <span className="font-display text-[3.5rem] font-semibold leading-none text-accent">{s.index}</span>
-      <h3 className="font-display text-[1.5rem] font-medium text-fg">{s.name}</h3>
+      <span aria-hidden className="absolute -top-[calc(2.5rem+6px)] left-7 hidden h-3 w-3 rounded-full border-2 border-primary bg-bg shadow-[0_0_10px_var(--primary)] lg:block" />
+      <span className="label text-accent-text">Phase {s.index}</span>
+      <h3 className="font-display text-[1.375rem] font-bold text-fg">{s.name}</h3>
       <p className="text-[0.9375rem] text-fg-muted">{s.short}</p>
       <ul className="mt-auto flex flex-col gap-1.5 pt-2">
         {s.youGet.map((g) => (
@@ -41,26 +39,26 @@ export function ProcessStrip() {
   const line = useTransform(scrollYProgress, [0, 1], reduce ? ["100%", "100%"] : ["0%", "100%"]);
 
   return (
-    <section id="process" data-nav-offset="0" data-theme="dark" aria-labelledby="process-title" className="relative isolate overflow-hidden bg-bg py-20 text-fg sm:py-28 lg:py-36">
-      <PhotoBackdrop photo={photos.escalator} overlay="full" parallax={100} />
-      <div aria-hidden className="blob-ember animate-drift pointer-events-none absolute -left-40 bottom-0 -z-10 h-[40rem] w-[40rem] opacity-50" />
+    <section id="process" aria-labelledby="process-title" className="relative isolate overflow-hidden py-20 text-fg sm:py-28 lg:py-36">
+      <div aria-hidden className="orb-primary pointer-events-none absolute -left-40 bottom-0 -z-10 h-[40rem] w-[40rem]" />
       <div className="container-x">
         <SectionHeader
-          eyebrow="How we work"
+          eyebrow="Process"
+          index="03"
           titleId="process-title"
-          title="Five stages. No surprises."
+          title="From signal to launch."
           lead="From the first conversation to a year after launch, you always know what happens next."
           aside={
-            <ButtonLink href="/#process" variant="secondary" indicator className="bg-white/5 backdrop-blur-sm">
-              Our process
+            <ButtonLink href="/#contact" variant="secondary" indicator>
+              Start with discovery
             </ButtonLink>
           }
         />
       </div>
 
-      <div ref={ref} className="relative mt-14 lg:mt-20">
+      <div ref={ref} className="relative mt-14 lg:mt-20 lg:pt-10">
         <div aria-hidden className="container-x absolute inset-x-0 top-0 hidden lg:block">
-          <div className="h-px w-full bg-white/15">
+          <div className="h-px w-full bg-border-strong">
             <motion.div className="h-px bg-[linear-gradient(90deg,var(--accent),var(--amber))]" style={{ width: line }} />
           </div>
         </div>

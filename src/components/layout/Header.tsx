@@ -66,54 +66,48 @@ export function Header() {
     scrollToTarget(id === "top" ? 0 : `#${id}`);
     window.history.pushState(null, "", id === "top" ? "/" : `#${id}`);
   };
-  // Pages that open with a dark photo hero: the header uses dark tokens until the user scrolls.
-  const overDarkHero = onHome || pathname.startsWith("/services/");
-  const forceDark = overDarkHero && !scrolled && !open;
   // Close the menu on any link tap, including a link to the current page.
   const closeMenu = () => setOpen(false);
 
   return (
-    <header
-      data-theme={forceDark ? "dark" : undefined}
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500",
-        // No backdrop-filter while the menu is open: it would make the header the
-        // containing block for the fixed overlay and collapse it.
-        open
-          ? "border-b border-border bg-bg"
-          : scrolled
-            ? "border-b border-border bg-bg/85 backdrop-blur-md"
-            : "border-b border-transparent",
-      )}
-    >
-      <div className="container-x flex h-16 items-center justify-between lg:h-20">
+    <header className="fixed inset-x-0 top-0 z-50 pt-3 sm:pt-4">
+      {/* Floating glass bar (sample-site style). The blur lives on this bar, not on
+          <header>, so the fixed mobile menu below is never trapped inside it. */}
+      <div className="container-x">
+      <div
+        className={cn(
+          "flex h-14 items-center justify-between rounded-2xl border px-2.5 pl-3 transition-[background-color,border-color,box-shadow] duration-500 lg:h-16 lg:px-3 lg:pl-4",
+          open ? "border-border bg-surface-1" : scrolled ? "glass shadow-[0_10px_40px_-20px_rgba(0,0,0,0.5)]" : "border-border bg-transparent",
+        )}
+      >
         <Link href="/" aria-label="QuadTricks home" className="relative z-50" onClick={(e) => onSectionClick(e, "/#top")}>
           <Logo />
         </Link>
 
         {/* Desktop navigation */}
         <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
-          {site.nav.map((item) => (
+          {site.nav.map((item, i) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "location" : undefined}
               onClick={(e) => onSectionClick(e, item.href)}
               className={cn(
-                "group relative px-3.5 py-2 text-[0.9375rem] font-medium text-fg-muted transition-colors duration-300 hover:text-fg",
+                "label group relative px-3 py-2 text-fg-muted transition-colors duration-300 hover:text-fg",
                 isActive(item.href) && "text-fg",
               )}
             >
               <span className="inline-flex items-center gap-2">
-                <span
-                  aria-hidden
-                  className={cn(
-                    "tri text-[0.6rem] transition-all duration-300 ease-(--ease-out-expo)",
-                    isActive(item.href) ? "scale-100 opacity-100" : "scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100",
-                  )}
-                />
+                <span className="text-accent-text">{String(i + 1).padStart(2, "0")}</span>
                 {item.label}
               </span>
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute inset-x-3 -bottom-0.5 h-px origin-left bg-primary transition-transform duration-500 ease-(--ease-out-expo)",
+                  isActive(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                )}
+              />
             </Link>
           ))}
         </nav>
@@ -134,7 +128,7 @@ export function Header() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="relative z-50 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-fg transition-colors hover:border-border-strong"
+            className="relative z-50 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-fg transition-colors hover:border-border-strong"
           >
             <span className="relative block h-3 w-5">
               <span
@@ -153,6 +147,7 @@ export function Header() {
           </button>
         </div>
       </div>
+      </div>
 
       {/* Mobile full-screen menu */}
       <AnimatePresence>
@@ -164,7 +159,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduce ? 0 : 0.3 }}
-            className="fixed inset-0 top-16 z-40 flex flex-col overflow-y-auto bg-bg lg:hidden"
+            className="fixed inset-0 top-0 z-40 flex flex-col overflow-y-auto bg-bg pt-20 lg:hidden"
           >
             <nav aria-label="Mobile" className="container-x flex flex-1 flex-col pt-6 pb-8">
               <ul className="flex flex-col">

@@ -1,8 +1,6 @@
 import { site } from "@/content/site";
-import { photos } from "@/content/media";
 import { whatsappLink } from "@/lib/utils";
 import { Label } from "@/components/ui/Label";
-import { PhotoBackdrop } from "@/components/ui/PhotoBackdrop";
 import { EnquiryForm } from "@/components/contact/EnquiryForm";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -21,24 +19,21 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" data-nav-offset="0" data-theme="dark" aria-labelledby="contact-title" className="relative isolate scroll-mt-0 overflow-hidden bg-bg text-fg">
-      <PhotoBackdrop photo={photos.cityNight} overlay="full" parallax={120} imgClassName="object-[50%_60%]" />
-      <div aria-hidden className="blob-orange animate-drift pointer-events-none absolute -left-[15%] top-1/4 -z-10 h-[50rem] w-[50rem] opacity-40" />
+    <section id="contact" data-nav-offset="0" aria-labelledby="contact-title" className="relative isolate scroll-mt-0 overflow-hidden text-fg">
+      <div aria-hidden className="orb-primary pointer-events-none absolute -left-[15%] top-1/4 -z-10 h-[50rem] w-[50rem]" />
       <div className="container-x py-24 sm:py-28 lg:py-36">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
-            <Label indicator className="text-fg">
-              Contact
-            </Label>
-            <h2 id="contact-title" className="mt-5 font-display text-[clamp(2.75rem,1.6rem+5vw,6rem)] font-semibold leading-[0.95] tracking-[-0.035em] text-fg">
-              Let&rsquo;s build <span className="text-gradient">what&rsquo;s next.</span>
+            <Label index="06">Contact</Label>
+            <h2 id="contact-title" className="mt-5 font-display text-[clamp(2.25rem,1.4rem+4vw,4.75rem)] font-bold leading-[1] tracking-[-0.035em] text-fg">
+              <span className="text-chrome">Let&rsquo;s build</span> <span className="text-accent-text">what&rsquo;s next.</span>
             </h2>
             <p className="mt-6 max-w-[42ch] text-lead text-fg-muted">
               Tell us about your project. We reply {site.contact.responseTime}, wherever you are.
             </p>
 
             <Reveal className="mt-10">
-              <ul className="divide-y divide-white/10 border-y border-white/10">
+              <ul className="divide-y divide-border border-y border-border">
                 {channels.map((c) => (
                   <li key={c.key}>
                     <a
@@ -65,7 +60,7 @@ export function ContactSection() {
 
           <div className="lg:col-span-7">
             <Reveal>
-              <div className="chamfer border border-white/10 bg-surface-1/90 p-6 shadow-2xl backdrop-blur-xl sm:p-8 lg:p-10">
+              <div className="glass rounded-[1.75rem] p-6 shadow-2xl sm:p-8 lg:p-10">
                 <h3 className="font-display text-h3 text-fg">Project enquiry</h3>
                 <p className="mt-2 text-fg-muted">All fields except company are required.</p>
                 <EnquiryForm className="mt-8" />

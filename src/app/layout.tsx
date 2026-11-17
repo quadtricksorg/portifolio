@@ -1,22 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Geist, JetBrains_Mono, Unbounded } from "next/font/google";
 import { site } from "@/content/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { themeInitScript } from "@/components/layout/ThemeToggle";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { ScrollHelper } from "@/components/layout/ScrollHelper";
+import { BrandScene } from "@/components/brand/BrandScene";
 import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
   subsets: ["latin"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
 });
@@ -53,8 +54,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-    { media: "(prefers-color-scheme: light)", color: "#f8f8f8" },
+    { media: "(prefers-color-scheme: dark)", color: "#07090e" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f7fb" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -66,7 +67,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${unbounded.variable} ${geist.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             sameAs: Object.values(site.social).filter(Boolean),
           }}
         />
+        <BrandScene />
         <SmoothScroll />
         <Header />
         <main id="main" className="flex-1">

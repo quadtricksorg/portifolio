@@ -6,14 +6,14 @@ type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
 const base =
-  "group/btn relative inline-flex items-center justify-center gap-2 font-display font-medium tracking-tight select-none " +
-  "transition-[background-color,color,border-color,transform] duration-300 ease-(--ease-out-expo) " +
+  "group/btn relative inline-flex items-center justify-center gap-2 font-sans font-semibold tracking-tight select-none " +
+  "transition-[background-color,color,border-color,transform,box-shadow] duration-300 ease-(--ease-out-expo) " +
   "active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 whitespace-nowrap";
 
 const variants: Record<Variant, string> = {
-  primary: "chamfer bg-accent text-accent-fg hover:bg-accent-hover",
+  primary: "pill bg-accent text-accent-fg shadow-[0_8px_30px_-8px_var(--primary)] hover:bg-accent-hover hover:shadow-[0_10px_40px_-6px_var(--primary)]",
   secondary:
-    "chamfer border border-border-strong bg-transparent text-fg hover:border-fg hover:bg-surface-2",
+    "pill border border-border-strong bg-glass text-fg hover:border-fg",
   ghost: "text-fg hover:text-accent-text px-0",
 };
 
@@ -27,7 +27,7 @@ type CommonProps = {
   size?: Size;
   className?: string;
   children: ReactNode;
-  /** Show the orange triangle indicator after the label. */
+  /** Show an arrow after the label. */
   indicator?: boolean;
 };
 
@@ -36,13 +36,18 @@ type LinkProps = CommonProps & { href: string } & Omit<ComponentProps<typeof Lin
 
 function Indicator({ variant }: { variant: Variant }) {
   return (
-    <span
+    <svg
       aria-hidden
-      className={cn(
-        "tri text-[0.75em] transition-transform duration-300 ease-(--ease-out-expo) group-hover/btn:translate-x-0.5",
-        variant === "primary" && "bg-accent-fg",
-      )}
-    />
+      viewBox="0 0 24 24"
+      className={cn("h-4 w-4 transition-transform duration-300 ease-(--ease-out-expo) group-hover/btn:translate-x-1", variant === "ghost" && "text-accent-text")}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
   );
 }
 

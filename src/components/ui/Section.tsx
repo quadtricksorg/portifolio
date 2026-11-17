@@ -13,7 +13,7 @@ type SectionProps = ComponentProps<"section"> & {
 export function Section({ className, bleed, tone = "bg", children, ...props }: SectionProps) {
   return (
     <section
-      className={cn("section-y relative", tone === "surface" && "bg-surface-1", !bleed && "container-x", className)}
+      className={cn("section-y relative", tone === "surface" && "bg-[color-mix(in_srgb,var(--surface-1)_45%,transparent)]", !bleed && "container-x", className)}
       {...props}
     >
       {children}
@@ -42,8 +42,8 @@ export function SectionHeader({ eyebrow, index, title, titleId, lead, aside, cla
         <Label indicator index={index}>
           {eyebrow}
         </Label>
-        <Tag id={titleId} className="mt-5 text-h2 text-fg">
-          {typeof title === "string" ? <TextReveal text={title} /> : title}
+        <Tag id={titleId} className="mt-5 font-display text-h2 font-bold text-fg">
+          {typeof title === "string" ? <TextReveal text={title} wordClassName="text-chrome pb-[0.08em]" /> : title}
         </Tag>
       </div>
       {(lead || aside) && (

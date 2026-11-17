@@ -5,19 +5,17 @@ import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { projects } from "@/content/projects";
-import { photos } from "@/content/media";
 import { categoryLabels } from "@/lib/schemas";
 import type { Project } from "@/lib/schemas";
 import { Label } from "@/components/ui/Label";
 import { ButtonLink } from "@/components/ui/Button";
-import { PhotoBackdrop } from "@/components/ui/PhotoBackdrop";
 import { TextReveal } from "@/components/motion/TextReveal";
 
 /** Cover art for a showcase card: websites fill the card; apps sit as phones on a tinted stage. */
 function Cover({ p, sizes }: { p: Project; sizes: string }) {
   if (p.category === "mobile-apps") {
     return (
-      <div className="absolute inset-0 flex items-end justify-center bg-[radial-gradient(circle_at_50%_70%,rgba(248,106,8,0.35),transparent_60%)] pt-[8%]">
+      <div className="absolute inset-0 flex items-end justify-center bg-[radial-gradient(circle_at_50%_70%,rgba(252,60,41,0.35),transparent_60%)] pt-[8%]">
         <div className="relative aspect-[9/18] h-[92%] overflow-hidden rounded-t-[1.6rem] border-[6px] border-b-0 border-[#151515] shadow-2xl transition-transform duration-700 ease-(--ease-out-expo) group-hover:-translate-y-2">
           <Image src={p.cover.src} alt={p.cover.alt} fill sizes={sizes} quality={90} className="object-cover object-top" />
         </div>
@@ -39,25 +37,25 @@ function Cover({ p, sizes }: { p: Project; sizes: string }) {
 function ShowcaseCard({ p, i, total, className }: { p: Project; i: number; total: number; className?: string }) {
   return (
     <Link href={`/work/${p.slug}`} className={`group block ${className ?? ""}`}>
-      <div className="chamfer relative aspect-[4/3] overflow-hidden border border-white/10 bg-graphite lg:aspect-auto lg:h-[min(52svh,500px)]">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-border bg-graphite lg:aspect-auto lg:h-[min(52svh,500px)]">
         <Cover p={p} sizes="(min-width:1024px) 55vw, 85vw" />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(10,10,10,0.85)_0%,rgba(10,10,10,0)_45%)]" />
-        <span className="label absolute left-4 top-4 rounded-sm bg-black/50 px-2 py-1 text-paper backdrop-blur">
+        <span className="label absolute left-4 top-4 rounded-sm bg-black/60 px-2 py-1 text-paper lg:backdrop-blur">
           {String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
           <div>
-            <p className="label text-amber">{categoryLabels[p.category]}</p>
+            <p className="label text-primary-glow">{categoryLabels[p.category]}</p>
             <h3 className="mt-2 font-display text-[1.5rem] font-semibold leading-tight text-paper sm:text-[2rem]">{p.title}</h3>
           </div>
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-transform duration-500 ease-(--ease-out-expo) group-hover:rotate-[-45deg]">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-transform duration-500 ease-(--ease-out-expo) group-hover:rotate-[-45deg]">
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </span>
         </div>
       </div>
-      <p className="mt-4 line-clamp-2 max-w-[52ch] text-[0.9375rem] text-paper/70">{p.summary}</p>
+      <p className="mt-4 line-clamp-2 max-w-[52ch] text-[0.9375rem] text-fg-muted">{p.summary}</p>
     </Link>
   );
 }
@@ -99,16 +97,14 @@ export function WorkShowcase() {
   const header = (
     <div className="container-x flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <Label indicator className="text-paper">
-          Selected work
-        </Label>
-        <h2 className="mt-5 max-w-[16ch] text-h2 text-paper">
-          <TextReveal text="Work we are proud to show." />
+        <Label index="02">Selected work</Label>
+        <h2 className="mt-5 max-w-[16ch] font-display text-h2 font-bold text-fg">
+          <TextReveal text="Built for what's next." wordClassName="text-chrome pb-[0.08em]" />
         </h2>
       </div>
       <div className="flex flex-col gap-4 lg:items-end">
-        <p className="max-w-[40ch] text-paper/70">{projects.length} websites, web apps and mobile apps designed and built by our team. Open any project for the full case study.</p>
-        <ButtonLink href="/#contact" variant="secondary" indicator className="border-white/25 text-paper hover:border-paper hover:bg-white/5">
+        <p className="max-w-[40ch] text-fg-muted">{projects.length} websites, web apps and mobile apps designed and built by our team. Open any project for the full case study.</p>
+        <ButtonLink href="/#contact" variant="secondary" indicator>
           Start a project
         </ButtonLink>
       </div>
@@ -116,8 +112,7 @@ export function WorkShowcase() {
   );
 
   return (
-    <section id="work" data-nav-offset="0" data-theme="dark" aria-label="Selected work" className="relative isolate scroll-mt-0 bg-bg text-fg">
-      <PhotoBackdrop photo={photos.lightTrails} overlay="full" parallax={120} className="opacity-60" />
+    <section id="work" data-nav-offset="0" aria-label="Selected work" className="relative isolate scroll-mt-0 text-fg">
 
       {/* Desktop: sticky horizontal track */}
       <div
@@ -138,13 +133,13 @@ export function WorkShowcase() {
             {!reduce && (
               <Link
                 href="/#contact"
-                className="chamfer group flex w-[min(28vw,380px)] shrink-0 flex-col justify-between bg-accent p-8 text-ink lg:h-[min(52svh,500px)]"
+                className="group flex w-[min(28vw,380px)] shrink-0 flex-col justify-between rounded-[1.5rem] bg-[linear-gradient(150deg,#e0301d,#b32616_60%,#7a1508)] p-8 text-white shadow-[0_20px_60px_-20px_var(--primary)] lg:h-[min(52svh,500px)]"
               >
-                <span className="label text-ink/70">Your project</span>
+                <span className="label text-white">Your project</span>
                 <span className="font-display text-[2.5rem] font-semibold leading-[1.05]">
                   Want to be next? Let&rsquo;s talk.
                 </span>
-                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-ink text-accent transition-transform duration-500 group-hover:translate-x-2">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-accent transition-transform duration-500 group-hover:translate-x-2">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
@@ -154,7 +149,7 @@ export function WorkShowcase() {
           </motion.div>
           {!reduce && (
             <div className="container-x">
-              <div className="h-px w-full bg-white/15">
+              <div className="h-px w-full bg-border-strong">
                 <motion.div className="h-px bg-accent" style={{ width: bar }} />
               </div>
             </div>
@@ -173,7 +168,7 @@ export function WorkShowcase() {
             <ShowcaseCard key={p.slug} p={p} i={i} total={list.length} className="w-[85vw] max-w-[560px] shrink-0 snap-start" />
           ))}
         </div>
-        <p className="container-x mt-3 flex items-center gap-2 text-sm text-paper/60">
+        <p className="container-x mt-3 flex items-center gap-2 text-sm text-fg-subtle">
           <span aria-hidden>←</span> Swipe to see more <span aria-hidden>→</span>
         </p>
       </div>
