@@ -1,0 +1,498 @@
+@import "tailwindcss";
+
+/* Theme variant: `dark:` utilities apply when <html data-theme="dark"> */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------
+   Brand tokens (from the QuadTricks logo)
+   ------------------------------------------------------------------ */
+:root {
+  --ink: #0a0a0a;
+  --orange: #f86a08;
+  --paper: #f8f8f8;
+
+  /* Extended warm palette (fixed across themes) */
+  --ember: #c94a05;
+  --amber: #ffb547;
+  --flame: #ff8a3d;
+  --rust: #4a1804;
+  --sand: #f2e6d9;
+  --cream: #fbf5ee;
+  --graphite: #1b1816;
+
+  /* Light theme (default values; dark overrides below) */
+  --bg: #f8f8f8;
+  --surface-1: #ffffff;
+  --surface-2: #f0efec;
+  --surface-3: #e6e4df;
+  --border: rgba(10, 10, 10, 0.08);
+  --border-strong: rgba(10, 10, 10, 0.18);
+  --fg: #0a0a0a;
+  --fg-muted: rgba(10, 10, 10, 0.64);
+  --fg-subtle: rgba(10, 10, 10, 0.6); /* AA on bg and surface-2 */
+  --accent: #f86a08;
+  --accent-hover: #e55f05;
+  --accent-fg: #0a0a0a;
+  --accent-text: #bf4d00; /* orange used as text on light surfaces (AA) */
+  --glow: rgba(248, 106, 8, 0.18);
+  --ring: #f86a08;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --surface-1: #121212;
+  --surface-2: #1a1a1a;
+  --surface-3: #242424;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --fg: #f8f8f8;
+  --fg-muted: rgba(248, 248, 248, 0.64);
+  --fg-subtle: rgba(248, 248, 248, 0.56); /* AA on bg and surfaces */
+  --accent: #f86a08;
+  --accent-hover: #ff7d24;
+  --accent-fg: #0a0a0a;
+  --accent-text: #ff8a3d;
+  --glow: rgba(248, 106, 8, 0.22);
+  --ring: #f86a08;
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------
+   Tailwind theme mapping
+   ------------------------------------------------------------------ */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-orange: var(--orange);
+  --color-paper: var(--paper);
+  --color-ember: var(--ember);
+  --color-amber: var(--amber);
+  --color-flame: var(--flame);
+  --color-rust: var(--rust);
+  --color-sand: var(--sand);
+  --color-cream: var(--cream);
+  --color-graphite: var(--graphite);
+
+  --color-bg: var(--bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-text: var(--accent-text);
+  --color-glow: var(--glow);
+  --color-ring: var(--ring);
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* Breakpoints from the blueprint (mobile-first) */
+  --breakpoint-xs: 430px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+
+  /* Fluid type scale */
+  --text-display: clamp(3.25rem, 2.2rem + 5.2vw, 7.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2.5rem, 1.9rem + 3vw, 4.5rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h2: clamp(2rem, 1.6rem + 1.8vw, 3rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.015em;
+  --text-lead: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-body--line-height: 1.6;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.12em;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color 0.35s var(--ease-out-expo),
+      color 0.35s var(--ease-out-expo);
+  }
+
+  /* Native hash jumps (no Lenis, e.g. touch devices) clear the fixed header. */
+  [id] {
+    scroll-margin-top: 88px;
+  }
+  [data-nav-offset="0"] {
+    scroll-margin-top: 0;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-wrap: balance;
+    /* Long single words (e.g. product names) wrap instead of overflowing on small phones. */
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  video,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Brand utilities
+   ------------------------------------------------------------------ */
+@utility chamfer {
+  /* One diagonally cut corner (top-left), mirroring the logo stroke. */
+  --cut: 14px;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+
+@utility chamfer-br {
+  --cut: 14px;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%
+  );
+}
+
+@utility chamfer-tr {
+  --cut: 14px;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    0 100%
+  );
+}
+
+@utility tri {
+  /* The orange triangle from the logo: right angle at bottom-left. */
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  background: var(--accent);
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+}
+
+@utility hairline {
+  border-color: var(--border);
+}
+
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+}
+
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  max-width: 1536px;
+  @media (min-width: 430px) {
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 600px) {
+    padding-inline: 2rem;
+  }
+  @media (min-width: 1024px) {
+    padding-inline: 3rem;
+  }
+  @media (min-width: 1440px) {
+    padding-inline: 4rem;
+  }
+}
+
+@utility section-y {
+  padding-block: 4rem;
+  @media (min-width: 600px) {
+    padding-block: 6rem;
+  }
+  @media (min-width: 1024px) {
+    padding-block: 8rem;
+  }
+}
+
+@utility grid-lines {
+  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+}
+
+/* Brand gradient text (orange to amber) */
+@utility text-gradient {
+  background: linear-gradient(100deg, var(--accent) 10%, var(--amber) 55%, var(--flame) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Film grain overlay; place inside a relatively positioned element. */
+@utility grain {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/grain.webp");
+  background-size: 128px 128px;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+
+/* Soft light blobs (radial gradients only: no filter blur, cheap to composite). */
+@utility blob-orange {
+  background: radial-gradient(closest-side, rgba(248, 106, 8, 0.55), rgba(248, 106, 8, 0) 72%);
+}
+@utility blob-amber {
+  background: radial-gradient(closest-side, rgba(255, 181, 71, 0.4), rgba(255, 181, 71, 0) 72%);
+}
+@utility blob-ember {
+  background: radial-gradient(closest-side, rgba(201, 74, 5, 0.55), rgba(201, 74, 5, 0) 72%);
+}
+
+@utility animate-drift {
+  animation: drift 18s ease-in-out infinite alternate;
+}
+@utility animate-drift-slow {
+  animation: drift 26s ease-in-out infinite alternate-reverse;
+}
+@utility animate-kenburns {
+  animation: kenburns 22s ease-out both;
+}
+@utility animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+@utility animate-spin-slow {
+  animation: spin 40s linear infinite;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Lenis smooth scrolling (native smooth-scroll must be off while it runs) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+html.lenis {
+  scroll-behavior: auto;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ------------------------------------------------------------------
+   Keyframes
+   ------------------------------------------------------------------ */
+/* Seamless loop for tracks made of two identical halves. */
+@keyframes marquee-half {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Above-the-fold entrances run in CSS so they start at first paint,
+   without waiting for JavaScript (keeps LCP fast). */
+@keyframes rise {
+  from {
+    /* Non-zero so Chrome counts the element for LCP at first paint. */
+    opacity: 0.001;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes word-up {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Slide only: an opacity fade on the whole page would delay LCP until hydration. */
+@keyframes page-in {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: rise 0.9s var(--ease-out-expo) both;
+}
+
+/* Slide only, fully opaque from first paint: for the LCP text itself. */
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@utility animate-slide-up {
+  animation: slide-up 0.9s var(--ease-out-expo) both;
+}
+
+@utility animate-word-up {
+  animation: word-up 0.8s var(--ease-out-expo) both;
+}
+
+@utility animate-page-in {
+  animation: page-in 0.5s var(--ease-out-expo) both;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(-6%, -4%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(8%, 6%, 0) scale(1.15);
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
